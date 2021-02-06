@@ -40,6 +40,7 @@ upgradeterraform() {
        wget "https://releases.hashicorp.com/terraform/${newversion}/terraform_${newversion}_linux_amd64.zip"
        unzip terraform_${newversion}_linux_amd64.zip
        sudo mv terraform "$tfpath"
+       rm -f terraform_${newversion}_linux_amd64.zip
 
        if command -v terraform &> /dev/null
        then

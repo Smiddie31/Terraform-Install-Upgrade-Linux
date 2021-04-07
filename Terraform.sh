@@ -1,9 +1,11 @@
 #!/bin/bash
 curl https://www.terraform.io/downloads.html > output.txt
+
 grep -i latest output.txt > output2.txt && defaulttfversion=$(grep -E -o "[0-9].[[0-9][0-9].[0-9]+[0-9]?" output2.txt | head -1)
 
 
 rm output.txt output2.txt #CleanupFiles
+
 
 defaulttfurl="https://releases.hashicorp.com/terraform/${defaulttfversion}/terraform_${defaulttfversion}_linux_amd64.zip"
 defaulttfpath="/usr/local/bin/terraform"
@@ -28,6 +30,7 @@ installterraform() {
     unzip "terraform_${defaulttfversion}_linux_amd64.zip"
     sudo mv terraform "$defaulttfpath"
     rm terraform_${defaulttfversion}_linux_amd64.zip #Cleanup ZipFile
+
 }
 
 upgradeterraform() {
@@ -46,7 +49,9 @@ upgradeterraform() {
        then
            echo "Successfully Upgraded"
        fi
+
        rm terraform_${newversion}_linux_amd64.zip #Cleanup ZipFile
+
     else
         echo "Terraform is already up to date!"
     fi

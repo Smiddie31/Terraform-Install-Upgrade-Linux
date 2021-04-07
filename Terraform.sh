@@ -1,9 +1,11 @@
 #!/bin/bash
 curl https://www.terraform.io/downloads.html > output.txt
-grep -i latest output.txt > output2.txt && defaulttfversion=$(grep -E -o "[0-9].[[0-9][0-9].[0-9]" output2.txt | head -1)
 
-#CleanupFiles
-rm output.txt output2.txt
+grep -i latest output.txt > output2.txt && defaulttfversion=$(grep -E -o "[0-9].[[0-9][0-9].[0-9]+[0-9]?" output2.txt | head -1)
+
+
+rm output.txt output2.txt #CleanupFiles
+
 
 defaulttfurl="https://releases.hashicorp.com/terraform/${defaulttfversion}/terraform_${defaulttfversion}_linux_amd64.zip"
 defaulttfpath="/usr/local/bin/terraform"
@@ -25,8 +27,10 @@ checkpackage() {
 
 installterraform() {
     wget "$defaulttfurl"
-    unzip "$defaulttfurl"
+    unzip "terraform_${defaulttfversion}_linux_amd64.zip"
     sudo mv terraform "$defaulttfpath"
+    rm terraform_${defaulttfversion}_linux_amd64.zip #Cleanup ZipFile
+
 }
 
 upgradeterraform() {
@@ -34,18 +38,20 @@ upgradeterraform() {
 
     if terraform -version | grep -q 'out of date'; then
        tfpath=$(which terraform)
-       oldversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]+\.[0-9]' | head -n1)
-       newversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]+\.[0-9]' | tail -n1)
+       oldversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]+\.[0-9]+[0-9]?' | head -n1)
+       newversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]+\.[0-9]+[0-9]?' | tail -n1)
        echo "Current Terraform Version is $oldversion. Upgrading to $newversion."
        wget "https://releases.hashicorp.com/terraform/${newversion}/terraform_${newversion}_linux_amd64.zip"
        unzip terraform_${newversion}_linux_amd64.zip
        sudo mv terraform "$tfpath"
-       rm -f terraform_${newversion}_linux_amd64.zip
 
        if command -v terraform &> /dev/null
        then
            echo "Successfully Upgraded"
        fi
+
+       rm terraform_${newversion}_linux_amd64.zip #Cleanup ZipFile
+
     else
         echo "Terraform is already up to date!"
     fi

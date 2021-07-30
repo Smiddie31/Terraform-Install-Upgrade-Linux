@@ -1,7 +1,8 @@
 #!/bin/bash
 curl https://www.terraform.io/downloads.html > output.txt
 
-grep -i latest output.txt > output2.txt && defaulttfversion=$(grep -E -o "[0-9].[[0-9][0-9].[0-9]+[0-9]?" output2.txt | head -1)
+
+grep -i latest output.txt > output2.txt && defaulttfversion=$(grep -E -o "[0-9].[[0-9]+[0-9]?.[0-9]+[0-9]?" output2.txt | head -1)
 
 
 rm output.txt output2.txt #CleanupFiles
@@ -38,8 +39,9 @@ upgradeterraform() {
 
     if terraform -version | grep -q 'out of date'; then
        tfpath=$(which terraform)
-       oldversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]+\.[0-9]+[0-9]?' | head -n1)
-       newversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]+\.[0-9]+[0-9]?' | tail -n1)
+
+       oldversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]?+\.[0-9]+[0-9]?' | head -n1)
+       newversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]?+\.[0-9]+[0-9]?' | tail -n1)
        echo "Current Terraform Version is $oldversion. Upgrading to $newversion."
        wget "https://releases.hashicorp.com/terraform/${newversion}/terraform_${newversion}_linux_amd64.zip"
        unzip terraform_${newversion}_linux_amd64.zip

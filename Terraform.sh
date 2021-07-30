@@ -1,6 +1,7 @@
 #!/bin/bash
 curl https://www.terraform.io/downloads.html > output.txt
 
+
 grep -i latest output.txt > output2.txt && defaulttfversion=$(grep -E -o "[0-9].[[0-9]+[0-9]?.[0-9]+[0-9]?" output2.txt | head -1)
 
 
@@ -38,6 +39,7 @@ upgradeterraform() {
 
     if terraform -version | grep -q 'out of date'; then
        tfpath=$(which terraform)
+
        oldversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]?+\.[0-9]+[0-9]?' | head -n1)
        newversion=$(terraform -version | grep 0 | grep -Eo '[0-9]+\.[0-9]+[0-9]?+\.[0-9]+[0-9]?' | tail -n1)
        echo "Current Terraform Version is $oldversion. Upgrading to $newversion."
